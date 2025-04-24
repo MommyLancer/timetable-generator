@@ -1,107 +1,92 @@
-/* Reset default styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root {
+  --primary-color: #003366;     /* Blue */
+  --accent-color: #c3b091;      /* Khaki */
+  --secondary-color: #800000;   /* Maroon */
+  --light-color: #f5f5dc;       /* Beige */
 }
 
-/* Page styling */
+/* Main Theme: Blue + Khaki */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f2f5;
-  color: #1c1e21;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--light-color);
+  margin: 0;
   padding: 20px;
+  color: #1c1e21;
 }
 
-/* Centered container */
 .container {
-  max-width: 960px;
-  margin: 0 auto;
-  background: #ffffff;
+  max-width: 900px;
+  margin: auto;
+  background: white;
   padding: 30px;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Headings */
 h1, h2, h3 {
-  margin-bottom: 20px;
-  color: #1c1e21;
-  font-weight: 600;
+  text-align: center;
+  color: var(--primary-color);
 }
 
-/* Form elements */
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-
-input, select {
-  width: 100%;
+input[type="text"], input[type="file"] {
+  width: calc(100% - 10px);
   padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccd0d5;
-  border-radius: 6px;
-  background-color: #ffffff;
-  font-size: 14px;
+  margin-bottom: 10px;
+  border: 1px solid var(--accent-color);
+  border-radius: 5px;
+  background-color: #fffdf8;
 }
 
-/* Buttons */
 button {
-  background-color: #1877f2;
+  padding: 10px 20px;
+  margin: 10px 5px;
+  background-color: var(--primary-color);
   color: white;
-  padding: 10px 18px;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #165ec9;
+  background-color: #001f40;
 }
 
-/* Table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 25px;
+#subjectClassContainer .subject-class-entry {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-th, td {
-  border: 1px solid #dfe3ee;
-  padding: 12px;
-  text-align: center;
+.subject-class-entry input {
+  flex: 1;
 }
 
-th {
-  background-color: #e4e6eb;
-  font-weight: 600;
+.timetable {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
 }
 
-td {
-  background-color: #f8f9fa;
+.teacher-card, .class-card {
+  background: white;
+  border: 1px solid var(--accent-color);
+  border-left: 5px solid var(--primary-color);
+  padding: 15px;
+  border-radius: 8px;
+  width: 250px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
 }
 
-/* Responsive for mobile */
-@media (max-width: 768px) {
-  .container {
-    padding: 15px;
-  }
+.teacher-card ul, .class-card ul {
+  padding-left: 20px;
+  margin-top: 10px;
+}
 
-  table, thead, tbody, th, td, tr {
-    display: block;
-    width: 100%;
-  }
-
-  th, td {
-    text-align: left;
-    padding: 10px;
-  }
-
-  th {
-    background-color: #dfe3ee;
-  }
+.school-logo {
+  display: block;
+  max-width: 100px;
+  margin: 0 auto 15px;
+  border-radius: 5px;
 }
