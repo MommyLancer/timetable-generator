@@ -3,13 +3,180 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="style.css" />
   <title>Timetable Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5; }
+    h1 { color: #333; }
+    label, input, select, button { display: block; margin-top: 10px; }
+    .section { margin-bottom: 30px; padding: 15px; background: #fff; border-radius: 10px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f0f0f0; }
+    #download-btn, #print-btn { margin-top: 10px; margin-right: 10px; }
+    #absent-section { margin-top: 20px; }
+  </style>
 </head>
 <body>
   <h1>Timetable Generator</h1>
-  <div id="app"></div>
-  <script src="script.js"></script>
+
+  <div class="section">
+    <h2>Teacher Information</h2>
+    <label for="teacher-name">Teacher Name:</label>
+    <input type="text" id="teacher-name" placeholder="e.g. Ms. Ali" />
+
+    <label for="subjects">Subjects:</label>
+    <input type="text" id="subjects" placeholder="e.g. Math, Science" />
+
+    <label for="classes">Classes Assigned:</label>
+    <input type="text" id="classes" placeholder="e.g. Class 6, Class 7" />
+
+    <button onclick="addTeacher()">Add Teacher</button>
+  </div>
+
+  <div class="section">
+    <h2>General Settings</h2>
+    <label for="class-duration">Class Duration (in minutes):</label>
+    <input type="number" id="class-duration" placeholder="e.g. 40" />
+
+    <label for="break-duration">Break Duration (in minutes):</label>
+    <input type="number" id="break-duration" placeholder="e.g. 10" />  
+  </div>
+
+  <div class="section">
+    <h2>Teacher List</h2>
+    <ul id="teacher-list"></ul>
+  </div>
+
+  <div class="section">
+    <h2>Generate Timetable</h2>
+    <button onclick="generateTimetable()">Generate</button>
+    <button id="download-btn" onclick="downloadPDF()">Download PDF</button>
+    <button id="print-btn" onclick="printTimetable()">Print Timetable</button>
+    <div id="timetable"></div>
+
+    <div id="absent-section">
+      <h3>Substitute Finder</h3>
+      <label for="absent-teacher">Mark Teacher Absent:</label>
+      <select id="absent-teacher"></select>
+      <button onclick="findSubstitutes()">Find Substitutes</button>
+      <div id="substitute-result"></div>
+    </div>
+  </div>
+
+  <script>
+    const teacherList = [];
+    let generatedSlots = [];
+
+    function addTeacher() {
+      const name = document.getElementById('teacher-name').value;
+      const subjects = document.getElementById('subjects').value;
+      const classes = document.getElementById('classes').value;
+
+      if (!name || !subjects || !classes) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      const teacher = {
+        name,
+        subjects: subjects.split(',').map(s => s.trim()),
+        classes: classes.split(',').map(c => c.trim())
+      };
+
+      teacherList.push(teacher);
+      displayTeachers();
+      updateAbsentDropdown();
+      document.getElementById('teacher-name').value = '';
+      document.getElementById('subjects').value = '';
+      document.getElementById('classes').value = '';
+    }
+
+    function displayTeachers() {
+      const list = document.getElementById('teacher-list');
+      list.innerHTML = '';
+      teacherList.forEach((t) => {
+        list.innerHTML += `<li><strong>${t.name}</strong> - Subjects: ${t.subjects.join(', ')} | Classes: ${t.classes.join(', ')}</li>`;
+      });
+    }
+
+    function updateAbsentDropdown() {
+      const dropdown = document.getElementById('absent-teacher');
+      dropdown.innerHTML = '';
+      teacherList.forEach(t => {
+        dropdown.innerHTML += `<option value="${t.name}">${t.name}</option>`;
+      });
+    }
+
+    function generateTimetable() {
+      const classDuration = document.getElementById('class-duration').value;
+      const breakDuration = document.getElementById('break-duration').value;
+      const output = document.getElementById('timetable');
+      generatedSlots = [];
+
+      if (!classDuration || !breakDuration) {
+        alert('Please set both class and break durations.');
+        return;
+      }
+
+      let html = '<table><thead><tr><th>Period</th><th>Teacher</th><th>Subject</th><th>Class</th></tr></thead><tbody>';
+      let period = 1;
+
+      teacherList.forEach((teacher) => {
+        teacher.subjects.forEach((subject, i) => {
+          const assignedClass = teacher.classes[i % teacher.classes.length];
+          generatedSlots.push({ period, teacher: teacher.name, subject, class: assignedClass });
+          html += `<tr>
+            <td>Period ${period}</td>
+            <td>${teacher.name}</td>
+            <td>${subject}</td>
+            <td>${assignedClass}</td>
+          </tr>`;
+          period++;
+        });
+      });
+
+      html += '</tbody></table>';
+      output.innerHTML = html;
+    }
+
+    function downloadPDF() {
+      const element = document.getElementById('timetable');
+      html2pdf().from(element).save('timetable.pdf');
+    }
+
+    function printTimetable() {
+      const printContents = document.getElementById('timetable').innerHTML;
+      const win = window.open('', '', 'height=600,width=800');
+      win.document.write('<html><head><title>Print Timetable</title>');
+      win.document.write('<style>table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ccc;padding:8px;text-align:left;}th{background:#eee;}</style>');
+      win.document.write('</head><body>');
+      win.document.write(printContents);
+      win.document.write('</body></html>');
+      win.document.close();
+      win.print();
+    }
+
+    function findSubstitutes() {
+      const absentName = document.getElementById('absent-teacher').value;
+      const resultDiv = document.getElementById('substitute-result');
+      const periods = generatedSlots.filter(slot => slot.teacher === absentName);
+
+      let html = `<h4>Absent: ${absentName}</h4>`;
+      if (periods.length === 0) {
+        html += '<p>No scheduled periods found.</p>';
+      } else {
+        html += '<ul>';
+        periods.forEach(period => {
+          const freeTeachers = teacherList.filter(t => t.name !== absentName && !generatedSlots.find(s => s.teacher === t.name && s.period === period.period));
+          const subs = freeTeachers.map(t => t.name).join(', ') || 'None Available';
+          html += `<li>Period ${period.period} - Class: ${period.class}, Subject: ${period.subject} <br><strong>Available Substitutes:</strong> ${subs}</li>`;
+        });
+        html += '</ul>';
+      }
+
+      resultDiv.innerHTML = html;
+    }
+  </script>
 </body>
 </html>
