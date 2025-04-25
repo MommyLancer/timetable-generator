@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Timetable Generator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>School Timetable Generator</h1>
+
+    <label>School Name:</label>
+    <input type="text" placeholder="Enter School Name" /><br>
+
+    <label>Upload Logo:</label>
+    <input type="file" /><br><br>
+
+    <h3>Break Settings</h3>
+    <label>Are there multiple breaks?</label>
+    <select id="multipleBreaks" onchange="toggleBreakInputs()">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
+    <div id="breakConfig" style="display:none; margin-top: 10px;">
+      <label>How many breaks?</label>
+      <input type="number" id="breakCount" min="1" max="5" value="2" onchange="generateBreakInputs()"><br><br>
+
+      <div id="breakInputsContainer"></div>
+    </div>
+
+    <!-- Other inputs can be added here -->
+
+    <script src="script.js"></script>
+  </div>
+</body>
+</html>
