@@ -1,39 +1,63 @@
-<!-- Trigger redeploy -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Timetable Generator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>School Timetable Generator</h1>
+    <header>
+      <h1>Smart Timetable Generator</h1>
+      <div class="theme-toggle">
+        <label for="themeSwitch">Toggle Theme:</label>
+        <input type="checkbox" id="themeSwitch" />
+      </div>
+    </header>
 
-    <label>School Name:</label>
-    <input type="text" placeholder="Enter School Name" /><br>
+    <section class="school-info">
+      <h2>School Info</h2>
+      <input type="text" id="schoolName" placeholder="Enter School Name" />
+      <input type="file" id="schoolLogo" accept="image/*" />
+    </section>
 
-    <label>Upload Logo:</label>
-    <input type="file" /><br><br>
+    <section class="teacher-entry">
+      <h2>Add Teacher</h2>
+      <div id="teacherForm">
+        <input type="text" placeholder="Teacher Name" class="teacher-name" />
+        <input type="text" placeholder="Subject" class="teacher-subject" />
+        <input type="text" placeholder="Class (e.g. 9A)" class="teacher-class" />
+        <button onclick="addTeacher()">Add</button>
+      </div>
+      <div id="teacherList"></div>
+    </section>
 
-    <h3>Break Settings</h3>
-    <label>Are there multiple breaks?</label>
-    <select id="multipleBreaks" onchange="toggleBreakInputs()">
-      <option value="no">No</option>
-      <option value="yes">Yes</option>
-    </select>
+    <section class="settings">
+      <h2>Timetable Settings</h2>
+      <input type="number" id="periodCount" placeholder="Number of Periods" />
+      <input type="text" id="periodTimings" placeholder="Enter timings (e.g. 8-9,9-10)" />
 
-    <div id="breakConfig" style="display:none; margin-top: 10px;">
-      <label>How many breaks?</label>
-      <input type="number" id="breakCount" min="1" max="5" value="2" onchange="generateBreakInputs()"><br><br>
+      <h3>Break Settings</h3>
+      <label>Are there multiple breaks?</label>
+      <select id="multiBreak">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+      <div id="breakSetup"></div>
+      <button onclick="addBreakInput()">Set Break Details</button>
+    </section>
 
-      <div id="breakInputsContainer"></div>
-    </div>
+    <section class="generate">
+      <button onclick="generateTimetables()">Generate Timetables</button>
+    </section>
 
-    <!-- Other inputs can be added here -->
-
-    <script src="script.js"></script>
+    <section id="output">
+      <h2>Generated Timetables</h2>
+      <div id="timetableResults"></div>
+    </section>
   </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
