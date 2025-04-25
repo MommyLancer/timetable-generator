@@ -3,60 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart Timetable Generator</title>
+  <title>Timetable Generator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Smart Timetable Generator</h1>
-      <div class="theme-toggle">
-        <label for="themeSwitch">Toggle Theme:</label>
-        <input type="checkbox" id="themeSwitch" />
-      </div>
-    </header>
+  <h1>Smart Timetable Generator</h1>
 
-    <section class="school-info">
-      <h2>School Info</h2>
-      <input type="text" id="schoolName" placeholder="Enter School Name" />
-      <input type="file" id="schoolLogo" accept="image/*" />
-    </section>
-
-    <section class="teacher-entry">
-      <h2>Add Teacher</h2>
-      <div id="teacherForm">
-        <input type="text" placeholder="Teacher Name" class="teacher-name" />
-        <input type="text" placeholder="Subject" class="teacher-subject" />
-        <input type="text" placeholder="Class (e.g. 9A)" class="teacher-class" />
-        <button onclick="addTeacher()">Add</button>
-      </div>
-      <div id="teacherList"></div>
-    </section>
-
-    <section class="settings">
-      <h2>Timetable Settings</h2>
-      <input type="number" id="periodCount" placeholder="Number of Periods" />
-      <input type="text" id="periodTimings" placeholder="Enter timings (e.g. 8-9,9-10)" />
-
-      <h3>Break Settings</h3>
-      <label>Are there multiple breaks?</label>
-      <select id="multiBreak">
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
-      </select>
-      <div id="breakSetup"></div>
-      <button onclick="addBreakInput()">Set Break Details</button>
-    </section>
-
-    <section class="generate">
-      <button onclick="generateTimetables()">Generate Timetables</button>
-    </section>
-
-    <section id="output">
-      <h2>Generated Timetables</h2>
-      <div id="timetableResults"></div>
-    </section>
+  <div class="theme-toggle">
+    <label for="themeSwitch">Toggle Dark Mode</label>
+    <input type="checkbox" id="themeSwitch" />
   </div>
+
+  <section>
+    <label for="schoolName">School Name:</label>
+    <input type="text" id="schoolName" placeholder="Enter school name" />
+
+    <label for="schoolLogo">Upload School Logo:</label>
+    <input type="file" id="schoolLogo" accept="image/*" />
+  </section>
+
+  <section>
+    <h2>Periods Setup</h2>
+    <label for="numPeriods">Number of Periods Per Day:</label>
+    <input type="number" id="numPeriods" min="1" />
+    <button onclick="generatePeriodInputs()">Set Period Timings</button>
+    <div id="periodInputs"></div>
+  </section>
+
+  <section>
+    <h2>Add Teacher</h2>
+    <label for="teacherName">Teacher Name:</label>
+    <input type="text" id="teacherName" placeholder="e.g., Ms. Sarah" />
+
+    <div id="subjectClassInputs">
+      <div class="subject-class-row">
+        <input type="text" placeholder="Subject" class="subject" />
+        <input type="text" placeholder="Class" class="class" />
+      </div>
+    </div>
+    <button onclick="addSubjectClassRow()">+ Add More Subjects</button>
+    <button onclick="saveTeacher()">Save Teacher</button>
+    <div id="teacherList"></div>
+  </section>
+
+  <section>
+    <h2>Break Settings</h2>
+    <label>Are there multiple breaks?</label>
+    <select id="breakCount" onchange="showBreakInputs()">
+      <option value="0">No</option>
+      <option value="1">One</option>
+      <option value="2">Two</option>
+      <option value="3">Three</option>
+    </select>
+    <div id="breakInputs"></div>
+  </section>
+
+  <button onclick="generateTimetable()">Generate Timetables</button>
+
+  <section id="timetableResults"></section>
 
   <script src="script.js"></script>
 </body>
