@@ -1,110 +1,91 @@
 let teachers = [];
+let periods = [];
 let breaks = [];
 
-document.getElementById('themeSwitch').addEventListener('change', () => {
-  document.body.classList.toggle('dark');
-});
-
-function addTeacher() {
-  const name = document.querySelector('.teacher-name').value;
-  const subject = document.querySelector('.teacher-subject').value;
-  const className = document.querySelector('.teacher-class').value;
-
-  if (name && subject && className) {
-    teachers.push({ name, subject, class: className, isAbsent: false });
-    displayTeachers();
-    clearInputs();
+function generatePeriodInputs() {
+  const num = parseInt(document.getElementById('numPeriods').value);
+  const container = document.getElementById('periodInputs');
+  container.innerHTML = '';
+  for (let i = 1; i <= num; i++) {
+    const input = document.createElement('input');
+    input.placeholder = `Period ${i} (e.g., 8:00 - 8:40)`;
+    input.className = 'periodTime';
+    container.appendChild(input);
   }
 }
 
-function clearInputs() {
-  document.querySelector('.teacher-name').value = '';
-  document.querySelector('.teacher-subject').value = '';
-  document.querySelector('.teacher-class').value = '';
+function addSubjectClassRow() {
+  const row = document.createElement('div');
+  row.className = 'subject-class-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Subject" class="subject" />
+    <input type="text" placeholder="Class" class="class" />
+  `;
+  document.getElementById('subjectClassInputs').appendChild(row);
 }
 
-function displayTeachers() {
-  const list = document.getElementById('teacherList');
-  list.innerHTML = '';
-  teachers.forEach((t, i) => {
-    const div = document.createElement('div');
-    div.innerHTML = `
-      ${t.name} | ${t.subject} | ${t.class}
-      <label>Absent?</label>
-      <input type="checkbox" onchange="toggleAbsent(${i})" ${t.isAbsent ? 'checked' : ''} />
+function saveTeacher() {
+  const name = document.getElementById('teacherName').value;
+  const subjectInputs = document.querySelectorAll('.subject');
+  const classInputs = document.querySelectorAll('.class');
+
+  const entries = [];
+  for (let i = 0; i < subjectInputs.length; i++) {
+    if (subjectInputs[i].value && classInputs[i].value) {
+      entries.push({
+        subject: subjectInputs[i].value,
+        class: classInputs[i].value
+      });
+    }
+  }
+
+  if (name && entries.length > 0) {
+    teachers.push({ name, entries });
+    displayTeacherList();
+    document.getElementById('teacherName').value = '';
+    document.getElementById('subjectClassInputs').innerHTML = `
+      <div class="subject-class-row">
+        <input type="text" placeholder="Subject" class="subject" />
+        <input type="text" placeholder="Class" class="class" />
+      </div>
     `;
-    list.appendChild(div);
-  });
-}
-
-function toggleAbsent(index) {
-  teachers[index].isAbsent = !teachers[index].isAbsent;
-}
-
-function addBreakInput() {
-  const multi = document.getElementById('multiBreak').value;
-  const setup = document.getElementById('breakSetup');
-  setup.innerHTML = '';
-
-  if (multi === 'yes') {
-    const numInput = document.createElement('input');
-    numInput.placeholder = 'How many breaks?';
-    numInput.type = 'number';
-    numInput.id = 'breakCount';
-    setup.appendChild(numInput);
-
-    const btn = document.createElement('button');
-    btn.innerText = 'Add Break Timings';
-    btn.onclick = () => {
-      const count = parseInt(document.getElementById('breakCount').value);
-      for (let i = 0; i < count; i++) {
-        const b = document.createElement('input');
-        b.placeholder = `Break ${i + 1} timing (e.g. 3)`;
-        b.classList.add('break-time');
-        setup.appendChild(b);
-
-        const who = document.createElement('input');
-        who.placeholder = `Break for (e.g. Girls, Primary)`;
-        who.classList.add('break-who');
-        setup.appendChild(who);
-      }
-    };
-    setup.appendChild(btn);
-  } else {
-    const single = document.createElement('input');
-    single.placeholder = 'Break after which period? (e.g. 4)';
-    single.classList.add('break-time');
-    setup.appendChild(single);
   }
 }
 
-function generateTimetables() {
-  const periods = parseInt(document.getElementById('periodCount').value);
-  const periodTimingStr = document.getElementById('periodTimings').value;
-  const periodTimings = periodTimingStr.split(',').map(p => p.trim());
-  const breakTimes = Array.from(document.querySelectorAll('.break-time')).map(b => parseInt(b.value));
-  const breakWhos = Array.from(document.querySelectorAll('.break-who')).map(w => w.value.trim());
-
-  breaks = breakTimes.map((time, i) => ({ period: time, for: breakWhos[i] || 'All' }));
-
-  const classes = [...new Set(teachers.map(t => t.class))];
-  const output = document.getElementById('timetableResults');
-  output.innerHTML = '';
-
-  // Class-wise Timetables
-  const classSection = document.createElement('div');
-  classSection.innerHTML = `<h3>Class-wise Timetables</h3>`;
-  classes.forEach(cls => {
-    const table = generateTable(periods, periodTimings, cls, 'class');
-    classSection.appendChild(table);
+function displayTeacherList() {
+  const container = document.getElementById('teacherList');
+  container.innerHTML = '<h3>Teachers Added:</h3>';
+  teachers.forEach(teacher => {
+    const div = document.createElement('div');
+    div.innerHTML = `<strong>${teacher.name}</strong>: ${teacher.entries.map(e => `${e.subject} - ${e.class}`).join(', ')}`;
+    container.appendChild(div);
   });
+}
 
-  // Teacher-wise Timetables
-  const teacherSection = document.createElement('div');
-  teacherSection.innerHTML = `<h3>Teacher-wise Timetables</h3>`;
-  teachers.forEach(t => {
-    const table = generateTable(periods, periodTimings, t.name, 'teacher');
-    teacherSection.appendChild(table);
-  });
+function showBreakInputs() {
+  const count = parseInt(document.getElementById('breakCount').value);
+  const container = document.getElementById('breakInputs');
+  container.innerHTML = '';
+  for (let i = 1; i <= count; i++) {
+    const label = document.createElement('label');
+    label.textContent = `Break ${i} Timing & Group (e.g., 10:00 - 10:15, Girls Primary)`;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'breakTime';
+    container.appendChild(label);
+    container.appendChild(input);
+  }
+}
 
-  output.appendChild
+function generateTimetable() {
+  periods = Array.from(document.querySelectorAll('.periodTime')).map(p => p.value);
+  breaks = Array.from(document.querySelectorAll('.breakTime')).map(b => b.value);
+
+  const result = document.getElementById('timetableResults');
+  result.innerHTML = `<h2>Generated Timetables</h2><p>(Mock output for now)</p>`;
+  result.innerHTML += `<pre>${JSON.stringify({ periods, teachers, breaks }, null, 2)}</pre>`;
+}
+
+document.getElementById('themeSwitch').addEventListener('change', function () {
+  document.body.classList.toggle('dark-mode');
+});
