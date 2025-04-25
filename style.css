@@ -1,35 +1,111 @@
-
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f4ee;
-  color: #333;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f1e8; /* Khaki */
+  color: #0a2540; /* Navy Blue */
   margin: 0;
-  padding: 0;
-}
-
-.container {
-  max-width: 700px;
-  margin: 20px auto;
-  background-color: #fff;
   padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
 }
 
-h1 {
+body.dark {
+  background-color: #3c2f2f; /* Maroon */
+  color: #f5f0e6; /* Beige */
+}
+
+h1, h2, h3 {
   text-align: center;
-  color: #3e3e5c;
+  margin-bottom: 20px;
+}
+
+input, select, button {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  margin: 10px auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+button {
+  background-color: #0a2540;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+body.dark button {
+  background-color: #800000; /* Maroon */
+  color: #f5f0e6;
+}
+
+button:hover {
+  opacity: 0.9;
 }
 
 label {
-  display: block;
   margin-top: 10px;
+  display: block;
+  text-align: center;
+  font-weight: bold;
 }
 
-input, select {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+#teacherList div {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 800px;
+  background-color: #fff;
+  border: 2px solid #0a2540;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+body.dark table {
+  background-color: #4b3b3b;
+  color: #f5f0e6;
+  border: 2px solid #f5f0e6;
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+th {
+  background-color: #0a2540;
+  color: white;
+}
+
+body.dark th {
+  background-color: #800000;
+}
+
+caption {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+#timetableResults {
+  margin-top: 30px;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.theme-toggle input {
+  margin-left: 10px;
+  transform: scale(1.5);
 }
