@@ -1,91 +1,123 @@
 let teachers = [];
-let periods = [];
-let breaks = [];
 
-function generatePeriodInputs() {
-  const num = parseInt(document.getElementById('numPeriods').value);
-  const container = document.getElementById('periodInputs');
-  container.innerHTML = '';
-  for (let i = 1; i <= num; i++) {
-    const input = document.createElement('input');
-    input.placeholder = `Period ${i} (e.g., 8:00 - 8:40)`;
-    input.className = 'periodTime';
+document.getElementById("themeToggle").addEventListener("change", function () {
+  document.body.classList.toggle("dark-theme");
+});
+
+document.getElementById("periodCount").addEventListener("input", function () {
+  const count = parseInt(this.value);
+  const container = document.getElementById("periodInputs");
+  container.innerHTML = "";
+  for (let i = 1; i <= count; i++) {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = `Period ${i} timing (e.g. 8:00-8:45)`;
+    input.classList.add("period");
     container.appendChild(input);
   }
-}
+});
 
-function addSubjectClassRow() {
-  const row = document.createElement('div');
-  row.className = 'subject-class-row';
+document.getElementById("breakOption").addEventListener("change", function () {
+  const container = document.getElementById("breakDetails");
+  container.innerHTML = "";
+
+  if (this.value === "yes") {
+    const breakCountInput = document.createElement("input");
+    breakCountInput.type = "number";
+    breakCountInput.min = 1;
+    breakCountInput.placeholder = "How many breaks?";
+    breakCountInput.addEventListener("input", function () {
+      const breakDetails = document.createElement("div");
+      breakDetails.innerHTML = "";
+      container.appendChild(breakDetails);
+      breakDetails.innerHTML = "";
+
+      for (let i = 0; i < parseInt(this.value); i++) {
+        const group = document.createElement("input");
+        group.placeholder = "Break for (e.g. Boys, Primary)";
+        const period = document.createElement("input");
+        period.placeholder = "After which period (e.g. 3)";
+        breakDetails.appendChild(group);
+        breakDetails.appendChild(period);
+        breakDetails.appendChild(document.createElement("br"));
+      }
+    });
+    container.appendChild(breakCountInput);
+  }
+});
+
+function addSubjectClass() {
+  const row = document.createElement("div");
+  row.classList.add("subject-class-row");
   row.innerHTML = `
-    <input type="text" placeholder="Subject" class="subject" />
-    <input type="text" placeholder="Class" class="class" />
+    <input type="text" class="subject" placeholder="Subject">
+    <input type="text" class="class" placeholder="Class">
+    <button onclick="this.parentElement.remove()">Remove</button>
   `;
-  document.getElementById('subjectClassInputs').appendChild(row);
+  document.getElementById("subjectClassList").appendChild(row);
 }
 
-function saveTeacher() {
-  const name = document.getElementById('teacherName').value;
-  const subjectInputs = document.querySelectorAll('.subject');
-  const classInputs = document.querySelectorAll('.class');
+function addTeacher() {
+  const teacherName = document.getElementById("teacherName").value.trim();
+  if (!teacherName) return alert("Enter teacher name");
 
-  const entries = [];
-  for (let i = 0; i < subjectInputs.length; i++) {
-    if (subjectInputs[i].value && classInputs[i].value) {
-      entries.push({
-        subject: subjectInputs[i].value,
-        class: classInputs[i].value
-      });
-    }
-  }
+  const subjects = Array.from(document.querySelectorAll(".subject-class-row")).map(row => {
+    const subject = row.querySelector(".subject").value.trim();
+    const cls = row.querySelector(".class").value.trim();
+    return subject && cls ? { subject, class: cls } : null;
+  }).filter(Boolean);
 
-  if (name && entries.length > 0) {
-    teachers.push({ name, entries });
-    displayTeacherList();
-    document.getElementById('teacherName').value = '';
-    document.getElementById('subjectClassInputs').innerHTML = `
-      <div class="subject-class-row">
-        <input type="text" placeholder="Subject" class="subject" />
-        <input type="text" placeholder="Class" class="class" />
-      </div>
-    `;
-  }
+  if (subjects.length === 0) return alert("Add at least one subject-class pair");
+
+  teachers.push({ name: teacherName, subjects });
+  document.getElementById("teacherName").value = "";
+  document.getElementById("subjectClassList").innerHTML = "";
+
+  renderTeachers();
 }
 
-function displayTeacherList() {
-  const container = document.getElementById('teacherList');
-  container.innerHTML = '<h3>Teachers Added:</h3>';
-  teachers.forEach(teacher => {
-    const div = document.createElement('div');
-    div.innerHTML = `<strong>${teacher.name}</strong>: ${teacher.entries.map(e => `${e.subject} - ${e.class}`).join(', ')}`;
-    container.appendChild(div);
+function renderTeachers() {
+  const list = document.getElementById("teacherList");
+  list.innerHTML = "";
+  teachers.forEach((t, idx) => {
+    const item = document.createElement("div");
+    item.textContent = `${t.name}: ${t.subjects.map(s => s.subject + " - " + s.class).join(", ")}`;
+    const del = document.createElement("button");
+    del.textContent = "Delete";
+    del.onclick = () => {
+      teachers.splice(idx, 1);
+      renderTeachers();
+    };
+    item.appendChild(del);
+    list.appendChild(item);
   });
 }
 
-function showBreakInputs() {
-  const count = parseInt(document.getElementById('breakCount').value);
-  const container = document.getElementById('breakInputs');
-  container.innerHTML = '';
-  for (let i = 1; i <= count; i++) {
-    const label = document.createElement('label');
-    label.textContent = `Break ${i} Timing & Group (e.g., 10:00 - 10:15, Girls Primary)`;
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'breakTime';
-    container.appendChild(label);
-    container.appendChild(input);
-  }
+function generateTimetables() {
+  const periodTimings = Array.from(document.querySelectorAll(".period")).map(p => p.value.trim());
+  if (periodTimings.length === 0) return alert("Add period timings");
+
+  const teacherWise = {};
+  const classWise = {};
+
+  teachers.forEach(t => {
+    teacherWise[t.name] = [];
+    t.subjects.forEach(s => {
+      teacherWise[t.name].push(`${s.subject} → ${s.class}`);
+      if (!classWise[s.class]) classWise[s.class] = [];
+      classWise[s.class].push(`${s.subject} → ${t.name}`);
+    });
+  });
+
+  const schoolName = document.getElementById("schoolName").value;
+  const logoInput = document.getElementById("schoolLogo");
+  const logo = logoInput.files[0] ? URL.createObjectURL(logoInput.files[0]) : null;
+
+  document.getElementById("teacherWiseOutput").textContent =
+    (logo ? `[LOGO] ` : "") + (schoolName ? `${schoolName}\n\n` : "") +
+    Object.entries(teacherWise).map(([t, subs]) => `${t}:\n  ${subs.join("\n  ")}`).join("\n\n");
+
+  document.getElementById("classWiseOutput").textContent =
+    (logo ? `[LOGO] ` : "") + (schoolName ? `${schoolName}\n\n` : "") +
+    Object.entries(classWise).map(([c, subs]) => `${c}:\n  ${subs.join("\n  ")}`).join("\n\n");
 }
-
-function generateTimetable() {
-  periods = Array.from(document.querySelectorAll('.periodTime')).map(p => p.value);
-  breaks = Array.from(document.querySelectorAll('.breakTime')).map(b => b.value);
-
-  const result = document.getElementById('timetableResults');
-  result.innerHTML = `<h2>Generated Timetables</h2><p>(Mock output for now)</p>`;
-  result.innerHTML += `<pre>${JSON.stringify({ periods, teachers, breaks }, null, 2)}</pre>`;
-}
-
-document.getElementById('themeSwitch').addEventListener('change', function () {
-  document.body.classList.toggle('dark-mode');
-});
