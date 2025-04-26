@@ -1,110 +1,105 @@
 :root {
-  --primary: #0d3b66;       /* deep blue */
-  --secondary: #f4d58d;     /* khaki */
-  --accent: #720026;        /* maroon */
-  --background: #fffaf0;    /* beige */
-  --text: #1a1a1a;
-  --card-bg: #ffffff;
+  --primary-color: #0056b3; /* Deep Blue */
+  --secondary-color: #f0e5c9; /* Light Khaki */
+  --accent-color: #800000; /* Maroon */
+  --background-color: #ffffff; /* White background */
+  --text-color: #333333;
 }
 
-body.dark-mode {
-  --primary: #e0e0e0;
-  --secondary: #444;
-  --accent: #d62828;
-  --background: #1e1e1e;
-  --text: #f5f5f5;
-  --card-bg: #2c2c2c;
+[data-theme="dark"] {
+  --primary-color: #d1e0ff; /* Soft Blue */
+  --secondary-color: #3a3a3a; /* Dark Background */
+  --accent-color: #ffb3b3; /* Light Maroon */
+  --background-color: #1f1f1f; /* Dark background */
+  --text-color: #ffffff;
 }
 
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: var(--background);
-  color: var(--text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
   margin: 0;
-  padding: 2rem;
-  transition: background 0.3s, color 0.3s;
-}
-
-.container {
-  max-width: 900px;
-  margin: auto;
-  background: var(--card-bg);
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  padding: 2rem;
+  padding: 20px;
 }
 
 h1, h2, h3 {
-  color: var(--primary);
+  color: var(--primary-color);
+  text-align: center;
 }
 
-input[type="text"], input[type="number"] {
-  width: 100%;
+input, select, button {
   padding: 10px;
-  margin-top: 8px;
-  margin-bottom: 15px;
-  border: 1px solid var(--secondary);
+  margin: 5px;
   border-radius: 8px;
-  background: #f9f9f9;
-}
-
-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  background: #fff;
+  border: 1px solid var(--primary-color);
+  width: 90%;
+  max-width: 400px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1rem;
 }
 
 button {
-  background: var(--primary);
+  background-color: var(--primary-color);
   color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
   cursor: pointer;
-  margin-right: 10px;
-  font-weight: bold;
-  transition: background 0.3s;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background: var(--accent);
+  background-color: var(--accent-color);
 }
 
-.section {
-  margin-bottom: 30px;
+.teacher-entry {
+  background-color: var(--secondary-color);
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px auto;
+  width: 90%;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.subject-class-row {
-  display: flex;
-  gap: 10px;
+#teacherList {
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: var(--secondary-color);
+}
+
+th, td {
+  border: 1px solid var(--primary-color);
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+td {
+  background-color: var(--background-color);
+}
+
+img {
+  display: block;
+  margin: 0 auto;
   margin-bottom: 10px;
 }
 
-#teacherList div {
-  background: var(--secondary);
-  color: var(--primary);
-  padding: 8px;
-  margin-bottom: 6px;
-  border-radius: 6px;
-}
-
-.toggle-theme {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.toggle-theme label {
-  margin-left: 10px;
-}
-
-pre {
-  background: #eee;
-  padding: 15px;
-  border-radius: 10px;
-  overflow-x: auto;
-}
-
-body.dark-mode pre {
-  background: #333;
+#themeToggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: var(--accent-color);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  z-index: 1000;
 }
