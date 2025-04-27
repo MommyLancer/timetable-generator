@@ -1,105 +1,118 @@
-:root {
-  --primary-color: #0056b3; /* Deep Blue */
-  --secondary-color: #f0e5c9; /* Light Khaki */
-  --accent-color: #800000; /* Maroon */
-  --background-color: #ffffff; /* White background */
-  --text-color: #333333;
-}
-
-[data-theme="dark"] {
-  --primary-color: #d1e0ff; /* Soft Blue */
-  --secondary-color: #3a3a3a; /* Dark Background */
-  --accent-color: #ffb3b3; /* Light Maroon */
-  --background-color: #1f1f1f; /* Dark background */
-  --text-color: #ffffff;
-}
-
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-color);
+  background: linear-gradient(to right, #f0f8ff, #e6e6fa);
   margin: 0;
   padding: 20px;
+  color: #333;
 }
 
 h1, h2, h3 {
-  color: var(--primary-color);
-  text-align: center;
-}
-
-input, select, button {
-  padding: 10px;
-  margin: 5px;
-  border-radius: 8px;
-  border: 1px solid var(--primary-color);
-  width: 90%;
-  max-width: 400px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  font-size: 1rem;
+  color: #004080;
 }
 
 button {
-  background-color: var(--primary-color);
+  background-color: #4CAF50;
   color: white;
+  padding: 8px 16px;
+  margin: 5px;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: var(--accent-color);
+  background-color: #45a049;
+}
+
+input, select {
+  padding: 8px;
+  margin: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+#subjectList div, #classList div {
+  background-color: #fff0f5;
+  padding: 6px;
+  margin: 4px;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
 }
 
 .teacher-entry {
-  background-color: var(--secondary-color);
+  background-color: #f0fff0;
   padding: 10px;
+  margin-bottom: 10px;
+  border: 2px solid #a2d5ab;
   border-radius: 10px;
-  margin: 10px auto;
-  width: 90%;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-#teacherList {
-  margin-top: 20px;
+.assignment-area select {
+  margin-right: 10px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-  background-color: var(--secondary-color);
+  margin-bottom: 30px;
+  background-color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 th, td {
-  border: 1px solid var(--primary-color);
   padding: 10px;
+  border: 1px solid #ccc;
   text-align: center;
 }
 
 th {
-  background-color: var(--primary-color);
+  background-color: #4682B4;
   color: white;
 }
 
 td {
-  background-color: var(--background-color);
+  font-size: 14px;
 }
 
-img {
-  display: block;
-  margin: 0 auto;
+#output {
+  margin-top: 30px;
+}
+
+#schoolLogoDisplay {
+  max-width: 150px;
+  max-height: 150px;
+  margin-bottom: 20px;
+}
+
+#schoolNameDisplay {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2e4053;
   margin-bottom: 10px;
 }
 
-#themeToggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background-color: var(--accent-color);
+.break {
+  background-color: yellow !important;
+  font-weight: bold;
+}
+
+.download-btn {
+  background-color: #FF5722;
+  font-size: 16px;
+  padding: 10px 20px;
+  margin-top: 20px;
+}
+
+.download-btn:hover {
+  background-color: #e64a19;
+}
+
+.period-heading {
+  background-color: #6a5acd;
   color: white;
-  padding: 10px 15px;
-  border-radius: 20px;
-  cursor: pointer;
-  z-index: 1000;
 }
