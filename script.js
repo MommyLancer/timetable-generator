@@ -1,171 +1,300 @@
+let subjects = [
+  "Urdu", "English", "Pakistan Studies", "Islamiat (Compulsory)",
+  "Computer Science", "Biology", "Physics", "Chemistry",
+  "Mathematics", "General Mathematics", "Economics", "Education",
+  "Islamiat (Elective)", "General Science", "Islamiat", "Nazra"
+];
+let classes = [
+  "6th A", "6th B", "7th A", "7th B",
+  "8th A1", "8th A2", "8th B1", "8th B2",
+  "9th A1", "9th A2", "9th B1", "9th B2",
+  "10th A1", "10th A2", "10th B"
+];
 let periods = [];
 let breaks = [];
 let teachers = [];
-let classes = [];
-let subjects = [];
 
-function createPeriodInputs() {
-    const numberOfPeriods = document.getElementById('numberOfPeriods').value;
-    const periodInputs = document.getElementById('periodInputs');
-    periodInputs.innerHTML = '';
-    periods = [];
-
-    for (let i = 1; i <= numberOfPeriods; i++) {
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.placeholder = `Period ${i} Timing (e.g., 8:00-8:40)`;
-        input.id = `period-${i}`;
-        periodInputs.appendChild(input);
-        periods.push(`period-${i}`);
-    }
+function displaySubjects() {
+  const subjectList = document.getElementById('subjectList');
+  subjectList.innerHTML = '';
+  subjects.forEach(sub => {
+    const div = document.createElement('div');
+    div.innerText = sub;
+    subjectList.appendChild(div);
+  });
 }
 
-function createBreakInputs() {
-    const numberOfBreaks = document.getElementById('numberOfBreaks').value;
-    const breakInputs = document.getElementById('breakInputs');
-    breakInputs.innerHTML = '';
-    breaks = [];
+function addSubject() {
+  const newSubject = prompt('Enter new subject name:');
+  if (newSubject) {
+    subjects.push(newSubject);
+    displaySubjects();
+  }
+}
 
-    for (let i = 1; i <= numberOfBreaks; i++) {
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.placeholder = `Break ${i} after which period?`;
-        input.id = `break-${i}`;
-        breakInputs.appendChild(input);
-        breaks.push(`break-${i}`);
-    }
+function displayClasses() {
+  const classList = document.getElementById('classList');
+  classList.innerHTML = '';
+  classes.forEach(cls => {
+    const div = document.createElement('div');
+    div.innerText = cls;
+    classList.appendChild(div);
+  });
+}
+
+function addClass() {
+  const newClass = prompt('Enter new class-section name:');
+  if (newClass) {
+    classes.push(newClass);
+    displayClasses();
+  }
+}
+
+function generatePeriodInputs() {
+  const num = parseInt(document.getElementById('numPeriods').value);
+  const container = document.getElementById('periodInputs');
+  container.innerHTML = '';
+  periods = [];
+  for (let i = 1; i <= num; i++) {
+    const input = document.createElement('input');
+    input.placeholder = `Timing for Period ${i}`;
+    input.type = 'text';
+    input.id = `period${i}`;
+    container.appendChild(input);
+    container.appendChild(document.createElement('br'));
+  }
+}
+
+function generateBreakInputs() {
+  const num = parseInt(document.getElementById('numBreaks').value);
+  const container = document.getElementById('breakInputs');
+  container.innerHTML = '';
+  breaks = [];
+  for (let i = 1; i <= num; i++) {
+    const div = document.createElement('div');
+    div.innerHTML = `
+      Break ${i} after Period Number: 
+      <input type="number" id="breakAfter${i}" min="1">
+    `;
+    container.appendChild(div);
+  }
 }
 
 function addTeacher() {
-    const teacherName = document.getElementById('teacherName').value.trim();
-    if (!teacherName) return alert('Enter Teacher Name.');
+  const container = document.getElementById('teacherInputs');
+  
+  const teacherDiv = document.createElement('div');
+  teacherDiv.className = "teacher-entry";
 
-    if (subjects.length === 0 || classes.length === 0) {
-        alert("Please first enter Subjects and Classes!");
-        return;
-    }
+  const nameInput = document.createElement('input');
+  nameInput.placeholder = 'Teacher Name';
+  
+  const assignDiv = document.createElement('div');
+  assignDiv.className = 'assignment-area';
 
-    const teacherDiv = document.createElement('div');
-    teacherDiv.className = 'teacher-entry';
-    
-    const subjectSelect = document.createElement('select');
+  const addAssignBtn = document.createElement('button');
+  addAssignBtn.innerText = "+ Assign Subject/Class";
+  addAssignBtn.type = "button";
+  addAssignBtn.onclick = () => {
+    const selectSubject = document.createElement('select');
     subjects.forEach(sub => {
-        const opt = document.createElement('option');
-        opt.value = sub.trim();
-        opt.innerText = sub.trim();
-        subjectSelect.appendChild(opt);
+      const option = document.createElement('option');
+      option.value = sub;
+      option.innerText = sub;
+      selectSubject.appendChild(option);
     });
 
-    const classSelect = document.createElement('select');
+    const selectClass = document.createElement('select');
     classes.forEach(cls => {
-        const opt = document.createElement('option');
-        opt.value = cls.trim();
-        opt.innerText = cls.trim();
-        classSelect.appendChild(opt);
+      const option = document.createElement('option');
+      option.value = cls;
+      option.innerText = cls;
+      selectClass.appendChild(option);
     });
 
-    teacherDiv.innerHTML = `<strong>${teacherName}</strong> teaches `;
-    teacherDiv.appendChild(subjectSelect);
-    teacherDiv.innerHTML += ' to ';
-    teacherDiv.appendChild(classSelect);
-    
-    const editBtn = document.createElement('button');
-    editBtn.innerText = 'Edit';
-    editBtn.onclick = () => {
-        subjectSelect.disabled = !subjectSelect.disabled;
-        classSelect.disabled = !classSelect.disabled;
-    };
-    teacherDiv.appendChild(editBtn);
+    assignDiv.appendChild(selectSubject);
+    assignDiv.appendChild(selectClass);
+    assignDiv.appendChild(document.createElement('br'));
+  };
 
-    document.getElementById('teacherList').appendChild(teacherDiv);
-
-    teachers.push({
-        name: teacherName,
-        subjectSelect: subjectSelect,
-        classSelect: classSelect
-    });
-
-    document.getElementById('teacherName').value = '';
+  teacherDiv.appendChild(nameInput);
+  teacherDiv.appendChild(assignDiv);
+  teacherDiv.appendChild(addAssignBtn);
+  container.appendChild(teacherDiv);
 }
 
-function generateTimetable() {
-    const schoolName = document.getElementById('schoolName').value;
-    const schoolLogoFile = document.getElementById('schoolLogo').files[0];
-    const teacherWiseDiv = document.getElementById('teacherWise');
-    const classWiseDiv = document.getElementById('classWise');
-    const schoolHeader = document.getElementById('schoolHeader');
+function generateTimetables() {
+  const schoolName = document.getElementById('schoolName').value;
+  const schoolLogo = document.getElementById('schoolLogo').files[0];
 
-    classes = document.getElementById('classesInput').value.split(',').map(c => c.trim());
-    subjects = document.getElementById('subjectsInput').value.split(',').map(s => s.trim());
+  document.getElementById('schoolNameDisplay').innerText = schoolName;
 
-    teacherWiseDiv.innerHTML = '';
-    classWiseDiv.innerHTML = '';
-    schoolHeader.innerHTML = '';
+  if (schoolLogo) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('schoolLogoDisplay').src = e.target.result;
+      document.getElementById('schoolLogoDisplay').style.display = "block";
+    };
+    reader.readAsDataURL(schoolLogo);
+  }
 
-    if (schoolName) {
-        const schoolHeading = document.createElement('h2');
-        schoolHeading.innerText = schoolName;
-        schoolHeader.appendChild(schoolHeading);
+  // Collect Periods
+  const periodInputs = document.querySelectorAll('[id^="period"]');
+  periods = [];
+  periodInputs.forEach(input => periods.push(input.value));
+
+  // Collect Breaks
+  const breakInputs = document.querySelectorAll('[id^="breakAfter"]');
+  breaks = [];
+  breakInputs.forEach(input => breaks.push(parseInt(input.value)));
+
+  // Collect Teachers
+  teachers = [];
+  const teacherEntries = document.querySelectorAll('.teacher-entry');
+  teacherEntries.forEach(entry => {
+    const name = entry.querySelector('input').value;
+    const assignments = [];
+    const selects = entry.querySelectorAll('select');
+    for (let i = 0; i < selects.length; i += 2) {
+      assignments.push({
+        subject: selects[i].value,
+        class: selects[i+1].value
+      });
     }
+    teachers.push({ name, assignments });
+  });
 
-    if (schoolLogoFile) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = "School Logo";
-            img.style.maxWidth = "100px";
-            schoolHeader.appendChild(img);
-        };
-        reader.readAsDataURL(schoolLogoFile);
-    }
+  document.getElementById('output').style.display = 'block';
 
-    // Teacher Wise Table
-    const teacherTable = document.createElement('table');
-    let headerRow = '<tr><th>Teacher</th>';
+  generateClassWise();
+  generateTeacherWise();
+}
+
+function generateClassWise() {
+  const container = document.getElementById('classWiseTimetable');
+  container.innerHTML = '';
+
+  classes.forEach(cls => {
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    const th = document.createElement('th');
+    th.innerText = `Class: ${cls}`;
+    th.colSpan = periods.length + 1;
+    headRow.appendChild(th);
+    thead.appendChild(headRow);
+
+    const periodRow = document.createElement('tr');
+    const emptyTh = document.createElement('th');
+    periodRow.appendChild(emptyTh);
     periods.forEach((p, idx) => {
-        const time = document.getElementById(p).value;
-        headerRow += `<th>${idx + 1} (${time})</th>`;
+      const periodTh = document.createElement('th');
+      periodTh.innerText = `${idx+1} (${p})`;
+      periodRow.appendChild(periodTh);
     });
-    headerRow += '</tr>';
-    teacherTable.innerHTML += headerRow;
+    thead.appendChild(periodRow);
 
-    teachers.forEach(t => {
-        let row = `<tr><td>${t.name}</td>`;
-        periods.forEach(() => {
-            row += `<td>${t.classSelect.value} - ${t.subjectSelect.value}</td>`;
-        });
-        row += '</tr>';
-        teacherTable.innerHTML += row;
-    });
+    const tbody = document.createElement('tbody');
+    const row = document.createElement('tr');
+    const classCell = document.createElement('td');
+    classCell.innerText = cls;
+    row.appendChild(classCell);
 
-    teacherWiseDiv.innerHTML = `<h3>Teacher Wise Timetable</h3>`;
-    teacherWiseDiv.appendChild(teacherTable);
-
-    // Class Wise Table
-    const classTable = document.createElement('table');
-    let classHeader = '<tr><th>Class</th>';
     periods.forEach((p, idx) => {
-        const time = document.getElementById(p).value;
-        classHeader += `<th>${idx + 1} (${time})</th>`;
-    });
-    classHeader += '</tr>';
-    classTable.innerHTML += classHeader;
+      const cell = document.createElement('td');
 
-    classes.forEach(cls => {
-        let row = `<tr><td>${cls}</td>`;
-        periods.forEach(() => {
-            let found = teachers.find(t => t.classSelect.value === cls);
-            row += `<td>${found ? found.name + ' (' + found.subjectSelect.value + ')' : '-'}</td>`;
+      let found = false;
+      teachers.forEach(t => {
+        t.assignments.forEach(a => {
+          if (a.class === cls) {
+            if (!found) {
+              cell.innerText = shortForm(a.subject) + ` (${t.name})`;
+              found = true;
+            }
+          }
         });
-        row += '</tr>';
-        classTable.innerHTML += row;
+      });
+
+      if (!found) {
+        if (breaks.includes(idx+1)) {
+          cell.innerText = "Break";
+          cell.style.backgroundColor = "yellow";
+        } else {
+          cell.innerText = "-";
+        }
+      }
+
+      row.appendChild(cell);
     });
 
-    classWiseDiv.innerHTML = `<h3>Class Wise Timetable</h3>`;
-    classWiseDiv.appendChild(classTable);
+    tbody.appendChild(row);
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    container.appendChild(table);
+    container.appendChild(document.createElement('br'));
+  });
+}
+
+function generateTeacherWise() {
+  const container = document.getElementById('teacherWiseTimetable');
+  container.innerHTML = '';
+
+  teachers.forEach(t => {
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    const th = document.createElement('th');
+    th.innerText = `Teacher: ${t.name}`;
+    th.colSpan = periods.length + 1;
+    headRow.appendChild(th);
+    thead.appendChild(headRow);
+
+    const periodRow = document.createElement('tr');
+    const emptyTh = document.createElement('th');
+    periodRow.appendChild(emptyTh);
+    periods.forEach((p, idx) => {
+      const periodTh = document.createElement('th');
+      periodTh.innerText = `${idx+1} (${p})`;
+      periodRow.appendChild(periodTh);
+    });
+    thead.appendChild(periodRow);
+
+    const tbody = document.createElement('tbody');
+    const row = document.createElement('tr');
+    const teacherCell = document.createElement('td');
+    teacherCell.innerText = t.name;
+    row.appendChild(teacherCell);
+
+    periods.forEach((p, idx) => {
+      const cell = document.createElement('td');
+
+      const assigned = t.assignments[idx];
+      if (assigned) {
+        cell.innerText = shortForm(assigned.subject) + ` (${assigned.class})`;
+      } else {
+        if (breaks.includes(idx+1)) {
+          cell.innerText = "Break";
+          cell.style.backgroundColor = "yellow";
+        } else {
+          cell.innerText = "-";
+        }
+      }
+
+      row.appendChild(cell);
+    });
+
+    tbody.appendChild(row);
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    container.appendChild(table);
+    container.appendChild(document.createElement('br'));
+  });
+}
+
+function shortForm(subject) {
+  return subject.split(' ').map(word => word[0]).join('').toUpperCase();
 }
 
 function downloadPDF() {
-    window.print();
-}
+  window.print();
+  }
