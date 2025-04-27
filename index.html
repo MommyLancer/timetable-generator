@@ -1,72 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timetable Generator</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>School Timetable Generator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Timetable Generator</h1>
-    </header>
 
-    <main>
-        <section id="school-info">
-            <h2>School Information</h2>
-            <input type="text" id="schoolName" placeholder="Enter School Name">
-            <input type="file" id="schoolLogo" accept="image/*">
-        </section>
+  <header>
+    <h1 id="schoolNameDisplay">School Name</h1>
+    <img id="schoolLogoDisplay" src="" alt="School Logo" style="display:none; max-height:80px;">
+  </header>
 
-        <section id="period-timings">
-            <h2>Period Timings</h2>
-            <input type="number" id="numberOfPeriods" placeholder="Number of Periods">
-            <button onclick="createPeriodInputs()">Set Periods</button>
-            <div id="periodInputs"></div>
-        </section>
+  <section class="input-section">
 
-        <section id="break-info">
-            <h2>Break Information</h2>
-            <label>Number of Breaks: </label>
-            <input type="number" id="numberOfBreaks" min="0" value="0">
-            <button onclick="createBreakInputs()">Set Breaks</button>
-            <div id="breakInputs"></div>
-        </section>
+    <h2>School Info</h2>
+    <input type="text" id="schoolName" placeholder="Enter School Name">
+    <input type="file" id="schoolLogo" accept="image/*">
 
-        <section id="setup-classes">
-            <h2>Classes and Sections</h2>
-            <textarea id="classesInput" placeholder="Enter Classes and Sections (Example: 9th-A, 9th-B, 10th-A)"></textarea>
-        </section>
+    <h2>Subjects</h2>
+    <div id="subjectList"></div>
+    <button onclick="addSubject()">+ Add Subject</button>
 
-        <section id="setup-subjects">
-            <h2>Subjects</h2>
-            <textarea id="subjectsInput" placeholder="Enter Subjects (Example: English, Maths, Science)"></textarea>
-        </section>
+    <h2>Classes & Sections</h2>
+    <div id="classList"></div>
+    <button onclick="addClass()">+ Add Class</button>
 
-        <section id="add-teachers">
-            <h2>Add Teachers</h2>
-            <input type="text" id="teacherName" placeholder="Teacher Name">
-            <button onclick="addTeacher()">Add Teacher</button>
-            <div id="teacherList"></div>
-        </section>
+    <h2>Period Timings</h2>
+    <input type="number" id="numPeriods" placeholder="Number of Periods" min="1">
+    <button onclick="generatePeriodInputs()">Set Periods</button>
+    <div id="periodInputs"></div>
 
-        <section id="generate">
-            <button onclick="generateTimetable()">Generate Timetables</button>
-        </section>
+    <h2>Breaks</h2>
+    <input type="number" id="numBreaks" placeholder="Number of Breaks" min="0">
+    <button onclick="generateBreakInputs()">Set Breaks</button>
+    <div id="breakInputs"></div>
 
-        <section id="timetable-output">
-            <h2>Timetable Outputs</h2>
-            <div id="schoolHeader"></div>
-            <div id="teacherWise"></div>
-            <div id="classWise"></div>
-            <button onclick="downloadPDF()">Download as PDF</button>
-        </section>
-    </main>
+    <h2>Teachers</h2>
+    <div id="teacherInputs"></div>
+    <button onclick="addTeacher()">+ Add Teacher</button>
 
-    <footer>
-        <p>Timetable Generator App</p>
-    </footer>
+    <br><br>
+    <button class="generate-btn" onclick="generateTimetables()">Generate Timetables</button>
 
-    <script src="script.js"></script>
+  </section>
+
+  <section id="output" style="display:none;">
+    <h2>Class Wise Timetable</h2>
+    <div id="classWiseTimetable"></div>
+
+    <h2>Teacher Wise Timetable</h2>
+    <div id="teacherWiseTimetable"></div>
+
+    <br>
+    <button onclick="downloadPDF()">Download PDF</button>
+  </section>
+
+  <script src="script.js"></script>
+
 </body>
 </html>
