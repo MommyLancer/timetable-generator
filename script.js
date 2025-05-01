@@ -1,300 +1,114 @@
-let subjects = [
-  "Urdu", "English", "Pakistan Studies", "Islamiat (Compulsory)",
-  "Computer Science", "Biology", "Physics", "Chemistry",
-  "Mathematics", "General Mathematics", "Economics", "Education",
-  "Islamiat (Elective)", "General Science", "Islamiat", "Nazra"
-];
-let classes = [
-  "6th A", "6th B", "7th A", "7th B",
-  "8th A1", "8th A2", "8th B1", "8th B2",
-  "9th A1", "9th A2", "9th B1", "9th B2",
-  "10th A1", "10th A2", "10th B"
-];
-let periods = [];
-let breaks = [];
-let teachers = [];
+// script.js
 
-function displaySubjects() {
-  const subjectList = document.getElementById('subjectList');
-  subjectList.innerHTML = '';
-  subjects.forEach(sub => {
-    const div = document.createElement('div');
-    div.innerText = sub;
-    subjectList.appendChild(div);
+// Handle theme toggle
+document.getElementById("toggleTheme").addEventListener("click", () => {
+  document.body.classList.toggle("dark-theme");
+});
+
+// Dynamic subject & class lists
+let subjects = ["Urdu", "English", "Pakistan Studies", "Islamiat (Compulsory)", "Computer Science", "Biology", "Physics", "Chemistry", "Mathematics", "General Mathematics", "Economics", "Education", "Islamiat (Elective)", "General Science", "Islamiat", "Nazra"];
+let classes = ["6th A", "6th B", "7th A", "7th B", "8th A1", "8th A2", "8th B1", "8th B2", "9th A1", "9th A2", "9th B1", "9th B2", "10th A1", "10th A2", "10th B"];
+
+function renderList(id, list, label) {
+  const container = document.getElementById(id);
+  container.innerHTML = `<h3>${label}</h3>`;
+  list.forEach(item => {
+    const el = document.createElement("div");
+    el.textContent = item;
+    container.appendChild(el);
   });
 }
 
-function addSubject() {
-  const newSubject = prompt('Enter new subject name:');
-  if (newSubject) {
-    subjects.push(newSubject);
-    displaySubjects();
+renderList("subjectList", subjects, "Subjects");
+renderList("classList", classes, "Classes");
+
+document.getElementById("addSubject").addEventListener("click", () => {
+  const newSub = prompt("Enter new subject:");
+  if (newSub) {
+    subjects.push(newSub);
+    renderList("subjectList", subjects, "Subjects");
   }
-}
+});
 
-function displayClasses() {
-  const classList = document.getElementById('classList');
-  classList.innerHTML = '';
-  classes.forEach(cls => {
-    const div = document.createElement('div');
-    div.innerText = cls;
-    classList.appendChild(div);
-  });
-}
-
-function addClass() {
-  const newClass = prompt('Enter new class-section name:');
+document.getElementById("addClass").addEventListener("click", () => {
+  const newClass = prompt("Enter new class:");
   if (newClass) {
     classes.push(newClass);
-    displayClasses();
+    renderList("classList", classes, "Classes");
   }
-}
+});
 
-function generatePeriodInputs() {
-  const num = parseInt(document.getElementById('numPeriods').value);
-  const container = document.getElementById('periodInputs');
-  container.innerHTML = '';
-  periods = [];
-  for (let i = 1; i <= num; i++) {
-    const input = document.createElement('input');
-    input.placeholder = `Timing for Period ${i}`;
-    input.type = 'text';
-    input.id = `period${i}`;
+// Period Inputs
+document.getElementById("generatePeriodInputs").addEventListener("click", () => {
+  const count = parseInt(document.getElementById("periodCount").value);
+  const container = document.getElementById("periodInputs");
+  container.innerHTML = "";
+  for (let i = 1; i <= count; i++) {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = `Period ${i} time (e.g. 8:00 - 8:40)`;
+    input.className = "period-time";
     container.appendChild(input);
-    container.appendChild(document.createElement('br'));
   }
-}
+});
 
-function generateBreakInputs() {
-  const num = parseInt(document.getElementById('numBreaks').value);
-  const container = document.getElementById('breakInputs');
-  container.innerHTML = '';
-  breaks = [];
-  for (let i = 1; i <= num; i++) {
-    const div = document.createElement('div');
-    div.innerHTML = `
-      Break ${i} after Period Number: 
-      <input type="number" id="breakAfter${i}" min="1">
-    `;
+// Add Breaks
+document.getElementById("addBreak").addEventListener("click", () => {
+  const container = document.getElementById("breakDetails");
+  const div = document.createElement("div");
+  div.innerHTML = `Break for <input type="text" placeholder="e.g. Boys or Girls" /> at Period <input type="number" min="1" />`;
+  container.appendChild(div);
+});
+
+// Add Teacher Assignments
+const teacherAssignments = [];
+document.getElementById("addTeacherAssignment").addEventListener("click", () => {
+  const div = document.createElement("div");
+  div.innerHTML = `
+    Subject: <select>${subjects.map(s => `<option>${s}</option>`).join('')}</select>
+    Class: <select>${classes.map(c => `<option>${c}</option>`).join('')}</select>
+  `;
+  document.getElementById("teacherAssignments").appendChild(div);
+});
+
+document.getElementById("saveTeacher").addEventListener("click", () => {
+  const name = document.getElementById("teacherName").value;
+  const entries = document.querySelectorAll("#teacherAssignments div");
+  const assignments = [];
+  entries.forEach(entry => {
+    const subject = entry.querySelector("select:nth-child(1)").value;
+    const className = entry.querySelector("select:nth-child(2)").value;
+    assignments.push({ subject, className });
+  });
+  teacherAssignments.push({ name, assignments });
+  renderTeachers();
+});
+
+function renderTeachers() {
+  const container = document.getElementById("teacherList");
+  container.innerHTML = "";
+  teacherAssignments.forEach((t, index) => {
+    const div = document.createElement("div");
+    div.innerHTML = `<b>${t.name}</b>: ${t.assignments.map(a => `${a.subject} - ${a.className}`).join(", ")} <button onclick="editTeacher(${index})">Edit</button> <button onclick="deleteTeacher(${index})">Delete</button>`;
     container.appendChild(div);
-  }
-}
-
-function addTeacher() {
-  const container = document.getElementById('teacherInputs');
-  
-  const teacherDiv = document.createElement('div');
-  teacherDiv.className = "teacher-entry";
-
-  const nameInput = document.createElement('input');
-  nameInput.placeholder = 'Teacher Name';
-  
-  const assignDiv = document.createElement('div');
-  assignDiv.className = 'assignment-area';
-
-  const addAssignBtn = document.createElement('button');
-  addAssignBtn.innerText = "+ Assign Subject/Class";
-  addAssignBtn.type = "button";
-  addAssignBtn.onclick = () => {
-    const selectSubject = document.createElement('select');
-    subjects.forEach(sub => {
-      const option = document.createElement('option');
-      option.value = sub;
-      option.innerText = sub;
-      selectSubject.appendChild(option);
-    });
-
-    const selectClass = document.createElement('select');
-    classes.forEach(cls => {
-      const option = document.createElement('option');
-      option.value = cls;
-      option.innerText = cls;
-      selectClass.appendChild(option);
-    });
-
-    assignDiv.appendChild(selectSubject);
-    assignDiv.appendChild(selectClass);
-    assignDiv.appendChild(document.createElement('br'));
-  };
-
-  teacherDiv.appendChild(nameInput);
-  teacherDiv.appendChild(assignDiv);
-  teacherDiv.appendChild(addAssignBtn);
-  container.appendChild(teacherDiv);
-}
-
-function generateTimetables() {
-  const schoolName = document.getElementById('schoolName').value;
-  const schoolLogo = document.getElementById('schoolLogo').files[0];
-
-  document.getElementById('schoolNameDisplay').innerText = schoolName;
-
-  if (schoolLogo) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      document.getElementById('schoolLogoDisplay').src = e.target.result;
-      document.getElementById('schoolLogoDisplay').style.display = "block";
-    };
-    reader.readAsDataURL(schoolLogo);
-  }
-
-  // Collect Periods
-  const periodInputs = document.querySelectorAll('[id^="period"]');
-  periods = [];
-  periodInputs.forEach(input => periods.push(input.value));
-
-  // Collect Breaks
-  const breakInputs = document.querySelectorAll('[id^="breakAfter"]');
-  breaks = [];
-  breakInputs.forEach(input => breaks.push(parseInt(input.value)));
-
-  // Collect Teachers
-  teachers = [];
-  const teacherEntries = document.querySelectorAll('.teacher-entry');
-  teacherEntries.forEach(entry => {
-    const name = entry.querySelector('input').value;
-    const assignments = [];
-    const selects = entry.querySelectorAll('select');
-    for (let i = 0; i < selects.length; i += 2) {
-      assignments.push({
-        subject: selects[i].value,
-        class: selects[i+1].value
-      });
-    }
-    teachers.push({ name, assignments });
-  });
-
-  document.getElementById('output').style.display = 'block';
-
-  generateClassWise();
-  generateTeacherWise();
-}
-
-function generateClassWise() {
-  const container = document.getElementById('classWiseTimetable');
-  container.innerHTML = '';
-
-  classes.forEach(cls => {
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    const headRow = document.createElement('tr');
-    const th = document.createElement('th');
-    th.innerText = `Class: ${cls}`;
-    th.colSpan = periods.length + 1;
-    headRow.appendChild(th);
-    thead.appendChild(headRow);
-
-    const periodRow = document.createElement('tr');
-    const emptyTh = document.createElement('th');
-    periodRow.appendChild(emptyTh);
-    periods.forEach((p, idx) => {
-      const periodTh = document.createElement('th');
-      periodTh.innerText = `${idx+1} (${p})`;
-      periodRow.appendChild(periodTh);
-    });
-    thead.appendChild(periodRow);
-
-    const tbody = document.createElement('tbody');
-    const row = document.createElement('tr');
-    const classCell = document.createElement('td');
-    classCell.innerText = cls;
-    row.appendChild(classCell);
-
-    periods.forEach((p, idx) => {
-      const cell = document.createElement('td');
-
-      let found = false;
-      teachers.forEach(t => {
-        t.assignments.forEach(a => {
-          if (a.class === cls) {
-            if (!found) {
-              cell.innerText = shortForm(a.subject) + ` (${t.name})`;
-              found = true;
-            }
-          }
-        });
-      });
-
-      if (!found) {
-        if (breaks.includes(idx+1)) {
-          cell.innerText = "Break";
-          cell.style.backgroundColor = "yellow";
-        } else {
-          cell.innerText = "-";
-        }
-      }
-
-      row.appendChild(cell);
-    });
-
-    tbody.appendChild(row);
-    table.appendChild(thead);
-    table.appendChild(tbody);
-    container.appendChild(table);
-    container.appendChild(document.createElement('br'));
   });
 }
 
-function generateTeacherWise() {
-  const container = document.getElementById('teacherWiseTimetable');
-  container.innerHTML = '';
-
-  teachers.forEach(t => {
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    const headRow = document.createElement('tr');
-    const th = document.createElement('th');
-    th.innerText = `Teacher: ${t.name}`;
-    th.colSpan = periods.length + 1;
-    headRow.appendChild(th);
-    thead.appendChild(headRow);
-
-    const periodRow = document.createElement('tr');
-    const emptyTh = document.createElement('th');
-    periodRow.appendChild(emptyTh);
-    periods.forEach((p, idx) => {
-      const periodTh = document.createElement('th');
-      periodTh.innerText = `${idx+1} (${p})`;
-      periodRow.appendChild(periodTh);
-    });
-    thead.appendChild(periodRow);
-
-    const tbody = document.createElement('tbody');
-    const row = document.createElement('tr');
-    const teacherCell = document.createElement('td');
-    teacherCell.innerText = t.name;
-    row.appendChild(teacherCell);
-
-    periods.forEach((p, idx) => {
-      const cell = document.createElement('td');
-
-      const assigned = t.assignments[idx];
-      if (assigned) {
-        cell.innerText = shortForm(assigned.subject) + ` (${assigned.class})`;
-      } else {
-        if (breaks.includes(idx+1)) {
-          cell.innerText = "Break";
-          cell.style.backgroundColor = "yellow";
-        } else {
-          cell.innerText = "-";
-        }
-      }
-
-      row.appendChild(cell);
-    });
-
-    tbody.appendChild(row);
-    table.appendChild(thead);
-    table.appendChild(tbody);
-    container.appendChild(table);
-    container.appendChild(document.createElement('br'));
-  });
-}
-
-function shortForm(subject) {
-  return subject.split(' ').map(word => word[0]).join('').toUpperCase();
-}
-
-function downloadPDF() {
-  window.print();
+function editTeacher(index) {
+  const t = teacherAssignments[index];
+  const newName = prompt("Edit teacher name", t.name);
+  if (newName) {
+    teacherAssignments[index].name = newName;
+    renderTeachers();
   }
+}
+
+function deleteTeacher(index) {
+  teacherAssignments.splice(index, 1);
+  renderTeachers();
+}
+
+
+I've added your script.js file to the canvas above. Let me know if you'd like to proceed with the style.css file next or make any changes to the JavaScript.
+
+                                       
