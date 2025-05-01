@@ -1,56 +1,88 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Timetable Generator</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" />
 </head>
 <body>
   <header>
-    <h1 id="school-name-display">Your School Timetable</h1>
-    <img id="school-logo" src="" alt="School Logo" style="display: none;" />
-    <div class="theme-toggle">
-      <button id="toggle-theme">Toggle Theme</button>
+    <h1>Smart School Timetable Generator</h1>
+    <div id="school-input">
+      <input type="text" id="schoolName" placeholder="Enter School Name" />
+      <input type="file" id="schoolLogo" accept="image/*" />
     </div>
-  </header>  <section class="setup">
-    <h2>School Info</h2>
-    <input type="text" id="school-name" placeholder="Enter School Name" />
-    <input type="file" id="logo-upload" accept="image/*" /><h2>Period Settings</h2>
-<label for="period-count">Number of Periods:</label>
-<input type="number" id="period-count" min="1" max="15" />
-<button id="generate-periods">Set Period Timings</button>
-<div id="period-timings"></div>
+    <button id="toggleTheme">Toggle Theme</button>
+  </header>
 
-<h2>Break Settings</h2>
-<label>More than one break?</label>
-<select id="multi-break">
-  <option value="no">No</option>
-  <option value="yes">Yes</option>
-</select>
-<div id="break-settings"></div>
+  <section id="config">
+    <h2>Setup Period Timings</h2>
+    <label>How many periods per day?
+      <input type="number" id="periodCount" min="1" />
+    </label>
+    <button id="generatePeriodInputs">Set Periods</button>
+    <div id="periodInputs"></div>
+    <button id="changePeriodSettings">Change Period Settings</button>
+  </section>
 
-<h2>Subjects, Classes & Sections</h2>
-<button id="add-subjects">Add Subjects</button>
-<div id="subject-list"></div>
-<button id="add-classes">Add Classes & Sections</button>
-<div id="class-list"></div>
+  <section id="break-config">
+    <h2>Break Settings</h2>
+    <label>Are there multiple breaks? 
+      <select id="multiBreaks">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+    </label>
+    <div id="breakDetails"></div>
+    <button id="addBreak">Add Break Info</button>
+  </section>
 
-<h2>Teacher Entry</h2>
-<input type="text" id="teacher-name" placeholder="Teacher Name" />
-<div id="teacher-subjects"></div>
-<button id="add-teacher-subject">+ Add Subject/Class</button>
-<button id="save-teacher">Save Teacher</button>
-<div id="teacher-list"></div>
+  <section id="subjects-classes">
+    <h2>Subjects & Classes</h2>
+    <button id="addSubject">Add Subject</button>
+    <button id="addClass">Add Class</button>
+    <div id="subjectList"></div>
+    <div id="classList"></div>
+  </section>
 
-  </section>  <section class="controls">
-    <button id="generate-timetable">Generate Timetables</button>
-  </section>  <section id="timetable-output">
-    <div class="tabs">
-      <button class="tab-btn" data-tab="class-wise">Class-wise</button>
-      <button class="tab-btn" data-tab="teacher-wise">Teacher-wise</button>
+  <section id="teacher-section">
+    <h2>Add Teacher</h2>
+    <input type="text" id="teacherName" placeholder="Enter Teacher Name" />
+    <div id="teacherAssignments"></div>
+    <button id="addTeacherAssignment">+ Add Subject & Class</button>
+    <button id="saveTeacher">Save Teacher</button>
+    <div id="teacherList"></div>
+  </section>
+
+  <section id="class-teacher-config">
+    <h2>Assign Class Teachers</h2>
+    <button id="assignClassTeacher">Assign</button>
+    <div id="classTeacherAssignments"></div>
+  </section>
+
+  <section id="timetable-output">
+    <h2>Generate Timetables</h2>
+    <button id="generateTimetable">Generate</button>
+    <div id="timetableDisplay">
+      <div id="teacherWiseTableContainer">
+        <h3>Teacher-wise Timetable</h3>
+        <div id="teacherWiseTable"></div>
+        <button class="downloadBtn" data-type="teacher">Download PDF</button>
+      </div>
+      <div id="classWiseTableContainer">
+        <h3>Class-wise Timetable</h3>
+        <div id="classWiseTable"></div>
+        <button class="downloadBtn" data-type="class">Download PDF</button>
+      </div>
     </div>
-    <div id="class-wise" class="timetable-tab"></div>
-    <div id="teacher-wise" class="timetable-tab" style="display: none;"></div>
-    <button id="download-pdf">Download PDF</button>
-  </section>  <script src="script.js"></script></body>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Smart Timetable App</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
 </html>
