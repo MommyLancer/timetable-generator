@@ -1,63 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>School Timetable Generator</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Timetable Generator</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <header>
-    <h1 id="schoolNameDisplay">School Name</h1>
-    <img id="schoolLogoDisplay" src="" alt="School Logo" style="display:none; max-height:80px;">
-  </header>
-
-  <section class="input-section">
-
+    <h1 id="school-name-display">Your School Timetable</h1>
+    <img id="school-logo" src="" alt="School Logo" style="display: none;" />
+    <div class="theme-toggle">
+      <button id="toggle-theme">Toggle Theme</button>
+    </div>
+  </header>  <section class="setup">
     <h2>School Info</h2>
-    <input type="text" id="schoolName" placeholder="Enter School Name">
-    <input type="file" id="schoolLogo" accept="image/*">
+    <input type="text" id="school-name" placeholder="Enter School Name" />
+    <input type="file" id="logo-upload" accept="image/*" /><h2>Period Settings</h2>
+<label for="period-count">Number of Periods:</label>
+<input type="number" id="period-count" min="1" max="15" />
+<button id="generate-periods">Set Period Timings</button>
+<div id="period-timings"></div>
 
-    <h2>Subjects</h2>
-    <div id="subjectList"></div>
-    <button onclick="addSubject()">+ Add Subject</button>
+<h2>Break Settings</h2>
+<label>More than one break?</label>
+<select id="multi-break">
+  <option value="no">No</option>
+  <option value="yes">Yes</option>
+</select>
+<div id="break-settings"></div>
 
-    <h2>Classes & Sections</h2>
-    <div id="classList"></div>
-    <button onclick="addClass()">+ Add Class</button>
+<h2>Subjects, Classes & Sections</h2>
+<button id="add-subjects">Add Subjects</button>
+<div id="subject-list"></div>
+<button id="add-classes">Add Classes & Sections</button>
+<div id="class-list"></div>
 
-    <h2>Period Timings</h2>
-    <input type="number" id="numPeriods" placeholder="Number of Periods" min="1">
-    <button onclick="generatePeriodInputs()">Set Periods</button>
-    <div id="periodInputs"></div>
+<h2>Teacher Entry</h2>
+<input type="text" id="teacher-name" placeholder="Teacher Name" />
+<div id="teacher-subjects"></div>
+<button id="add-teacher-subject">+ Add Subject/Class</button>
+<button id="save-teacher">Save Teacher</button>
+<div id="teacher-list"></div>
 
-    <h2>Breaks</h2>
-    <input type="number" id="numBreaks" placeholder="Number of Breaks" min="0">
-    <button onclick="generateBreakInputs()">Set Breaks</button>
-    <div id="breakInputs"></div>
-
-    <h2>Teachers</h2>
-    <div id="teacherInputs"></div>
-    <button onclick="addTeacher()">+ Add Teacher</button>
-
-    <br><br>
-    <button class="generate-btn" onclick="generateTimetables()">Generate Timetables</button>
-
-  </section>
-
-  <section id="output" style="display:none;">
-    <h2>Class Wise Timetable</h2>
-    <div id="classWiseTimetable"></div>
-
-    <h2>Teacher Wise Timetable</h2>
-    <div id="teacherWiseTimetable"></div>
-
-    <br>
-    <button onclick="downloadPDF()">Download PDF</button>
-  </section>
-
-  <script src="script.js"></script>
-
-</body>
+  </section>  <section class="controls">
+    <button id="generate-timetable">Generate Timetables</button>
+  </section>  <section id="timetable-output">
+    <div class="tabs">
+      <button class="tab-btn" data-tab="class-wise">Class-wise</button>
+      <button class="tab-btn" data-tab="teacher-wise">Teacher-wise</button>
+    </div>
+    <div id="class-wise" class="timetable-tab"></div>
+    <div id="teacher-wise" class="timetable-tab" style="display: none;"></div>
+    <button id="download-pdf">Download PDF</button>
+  </section>  <script src="script.js"></script></body>
 </html>
