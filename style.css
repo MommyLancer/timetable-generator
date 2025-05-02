@@ -1,118 +1,150 @@
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to right, #f0f8ff, #e6e6fa);
-  margin: 0;
-  padding: 20px;
-  color: #333;
+:root {
+  --main-bg-light: #f4f7f9;
+  --main-bg-dark: #1e1e2f;
+  --main-text-light: #1e1e2f;
+  --main-text-dark: #ffffff;
+  --primary: #005f99;
+  --accent: #c8b273; /* Khaki */
+  --highlight: #ffc107; /* Yellow for breaks */
+  --secondary: #800000; /* Maroon */
+  --baige: #f5f5dc;
 }
 
-h1, h2, h3 {
-  color: #004080;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background-color: var(--main-bg-light);
+  color: var(--main-text-light);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.dark-theme {
+  background-color: var(--main-bg-dark);
+  color: var(--main-text-dark);
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+  background-color: var(--baige);
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+}
+
+h1, h2 {
+  color: var(--primary);
+}
+
+input, select, button {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 button {
-  background-color: #4CAF50;
+  background-color: var(--primary);
   color: white;
-  padding: 8px 16px;
-  margin: 5px;
   border: none;
-  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
+  transition: background 0.3s;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: var(--secondary);
 }
 
-input, select {
-  padding: 8px;
-  margin: 5px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-#subjectList div, #classList div {
-  background-color: #fff0f5;
-  padding: 6px;
-  margin: 4px;
-  border: 1px solid #dcdcdc;
-  border-radius: 6px;
-}
-
-.teacher-entry {
-  background-color: #f0fff0;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 2px solid #a2d5ab;
-  border-radius: 10px;
-}
-
-.assignment-area select {
-  margin-right: 10px;
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 2rem;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 30px;
-  background-color: white;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  overflow: hidden;
+  margin-bottom: 1rem;
 }
 
 th, td {
-  padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #aaa;
+  padding: 8px;
   text-align: center;
 }
 
 th {
-  background-color: #4682B4;
+  background-color: var(--primary);
   color: white;
 }
 
-td {
-  font-size: 14px;
-}
-
-#output {
-  margin-top: 30px;
-}
-
-#schoolLogoDisplay {
-  max-width: 150px;
-  max-height: 150px;
-  margin-bottom: 20px;
-}
-
-#schoolNameDisplay {
-  font-size: 24px;
+.break-cell {
+  background-color: var(--highlight) !important;
   font-weight: bold;
-  color: #2e4053;
-  margin-bottom: 10px;
-}
-
-.break {
-  background-color: yellow !important;
-  font-weight: bold;
-}
-
-.download-btn {
-  background-color: #FF5722;
-  font-size: 16px;
-  padding: 10px 20px;
-  margin-top: 20px;
-}
-
-.download-btn:hover {
-  background-color: #e64a19;
+  color: #000;
 }
 
 .period-heading {
-  background-color: #6a5acd;
+  background-color: var(--accent);
+  color: #000;
+  font-weight: bold;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 1rem;
+}
+
+.row-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.row-flex > div {
+  flex: 1;
+  min-width: 200px;
+}
+
+.theme-toggle {
+  margin-top: 1rem;
+  float: right;
+  background-color: var(--accent);
+  color: #000;
+}
+
+.card {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+}
+
+.dark-theme .card {
+  background-color: #2e2e3e;
   color: white;
+}
+
+.dark-theme th {
+  background-color: #005f99;
+}
+
+.dark-theme .break-cell {
+  background-color: #e5b900;
+}
+
+#logoPreview {
+  max-height: 100px;
+  margin-top: 0.5rem;
+}
+
+.footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 2rem;
 }
