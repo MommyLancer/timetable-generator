@@ -5,83 +5,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Timetable Generator</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="favicon.ico" />
 </head>
 <body>
-  <header>
-    <h1>Smart School Timetable Generator</h1>
-    <div id="school-input">
-      <input type="text" id="schoolName" placeholder="Enter School Name" />
-      <input type="file" id="schoolLogo" accept="image/*" />
-    </div>
-    <button id="toggleTheme">Toggle Theme</button>
-  </header>
+  <div class="app-container">
+    <header>
+      <h1 id="schoolNameHeader">Smart Timetable Generator</h1>
+      <img id="schoolLogo" src="" alt="" style="display: none;" />
+    </header>
 
-  <section id="config">
-    <h2>Setup Period Timings</h2>
-    <label>How many periods per day?
-      <input type="number" id="periodCount" min="1" />
-    </label>
-    <button id="generatePeriodInputs">Set Periods</button>
-    <div id="periodInputs"></div>
-    <button id="changePeriodSettings">Change Period Settings</button>
-  </section>
+    <section class="setup-section">
+      <label>School Name: <input type="text" id="schoolNameInput" placeholder="Enter school name"></label>
+      <label>School Logo: <input type="file" id="schoolLogoInput" accept="image/*"></label>
+      <button onclick="saveSchoolInfo()">Save School Info</button>
 
-  <section id="break-config">
-    <h2>Break Settings</h2>
-    <label>Are there multiple breaks? 
-      <select id="multiBreaks">
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
-      </select>
-    </label>
-    <div id="breakDetails"></div>
-    <button id="addBreak">Add Break Info</button>
-  </section>
-
-  <section id="subjects-classes">
-    <h2>Subjects & Classes</h2>
-    <button id="addSubject">Add Subject</button>
-    <button id="addClass">Add Class</button>
-    <div id="subjectList"></div>
-    <div id="classList"></div>
-  </section>
-
-  <section id="teacher-section">
-    <h2>Add Teacher</h2>
-    <input type="text" id="teacherName" placeholder="Enter Teacher Name" />
-    <div id="teacherAssignments"></div>
-    <button id="addTeacherAssignment">+ Add Subject & Class</button>
-    <button id="saveTeacher">Save Teacher</button>
-    <div id="teacherList"></div>
-  </section>
-
-  <section id="class-teacher-config">
-    <h2>Assign Class Teachers</h2>
-    <button id="assignClassTeacher">Assign</button>
-    <div id="classTeacherAssignments"></div>
-  </section>
-
-  <section id="timetable-output">
-    <h2>Generate Timetables</h2>
-    <button id="generateTimetable">Generate</button>
-    <div id="timetableDisplay">
-      <div id="teacherWiseTableContainer">
-        <h3>Teacher-wise Timetable</h3>
-        <div id="teacherWiseTable"></div>
-        <button class="downloadBtn" data-type="teacher">Download PDF</button>
+      <div class="period-settings">
+        <label>Number of Periods per Day: <input type="number" id="periodCount" min="1" value="8" /></label>
+        <button onclick="generatePeriodInputs()">Set Periods</button>
+        <div id="periodInputs"></div>
+        <button onclick="savePeriodTimings()">Save Period Timings</button>
       </div>
-      <div id="classWiseTableContainer">
-        <h3>Class-wise Timetable</h3>
-        <div id="classWiseTable"></div>
-        <button class="downloadBtn" data-type="class">Download PDF</button>
-      </div>
-    </div>
-  </section>
 
-  <footer>
-    <p>&copy; 2025 Smart Timetable App</p>
-  </footer>
+      <div class="break-settings">
+        <label>Are there multiple breaks? <select id="multipleBreaks" onchange="toggleBreakInputs()">
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select></label>
+        <div id="breakInputs"></div>
+      </div>
+
+      <div class="teacher-entry">
+        <h2>Add Teacher</h2>
+        <input type="text" id="teacherName" placeholder="Teacher Name" />
+        <div id="subjectClassInputs"></div>
+        <button onclick="addSubjectClassRow()">+ Add Subject/Class</button>
+        <button onclick="addTeacher()">Add Teacher</button>
+      </div>
+
+      <div class="first-period-prefs">
+        <h3>Assign First Period Preferences</h3>
+        <div id="firstPeriodPrefs"></div>
+      </div>
+    </section>
+
+    <section class="teachers-section">
+      <h2>Teachers</h2>
+      <div id="teacherList"></div>
+    </section>
+
+    <section class="output-section">
+      <button onclick="generateTimetables()">Generate Timetables</button>
+      <div id="timetablesOutput"></div>
+      <button onclick="downloadPDF()">Download PDF</button>
+    </section>
+  </div>
 
   <script src="script.js"></script>
 </body>
