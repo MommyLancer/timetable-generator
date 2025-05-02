@@ -1,114 +1,196 @@
-// script.js
+let teachers = [];
+let classes = [
+  "6th A", "6th B", "7th A", "7th B", "8th A1", "8th A2", "8th B1", "8th B2",
+  "9th A1", "9th A2", "9th B1", "9th B2", "10th A1", "10th A2", "10th B"
+];
+let subjects = [
+  "Urdu", "English", "Pakistan Studies", "Islamiat (Compulsory)", "Computer Science", "Biology",
+  "Physics", "Chemistry", "Mathematics", "General Mathematics", "Economics", "Education",
+  "Islamiat (Elective)", "General Science", "Islamiat", "Nazra"
+];
+let periodTimings = [
+  "8:00-8:40", "8:40-9:20", "9:20-10:00", "10:00-10:40", "10:40-11:20",
+  "11:20-12:00", "12:00-12:40", "12:40-1:20", "1:20-2:00"
+];
+let classTimetable = {};
+let teacherTimetable = {};
+let breakInfo = [];
 
-// Handle theme toggle
-document.getElementById("toggleTheme").addEventListener("click", () => {
-  document.body.classList.toggle("dark-theme");
-});
+function initDropdowns() {
+  const subjectList = document.getElementById("subject-list");
+  const classList = document.getElementById("class-list");
+  subjectList.innerHTML = "";
+  classList.innerHTML = "";
 
-// Dynamic subject & class lists
-let subjects = ["Urdu", "English", "Pakistan Studies", "Islamiat (Compulsory)", "Computer Science", "Biology", "Physics", "Chemistry", "Mathematics", "General Mathematics", "Economics", "Education", "Islamiat (Elective)", "General Science", "Islamiat", "Nazra"];
-let classes = ["6th A", "6th B", "7th A", "7th B", "8th A1", "8th A2", "8th B1", "8th B2", "9th A1", "9th A2", "9th B1", "9th B2", "10th A1", "10th A2", "10th B"];
+  subjects.forEach((subj) => {
+    const option = document.createElement("option");
+    option.value = subj;
+    option.innerText = subj;
+    subjectList.appendChild(option);
+  });
 
-function renderList(id, list, label) {
-  const container = document.getElementById(id);
-  container.innerHTML = `<h3>${label}</h3>`;
-  list.forEach(item => {
-    const el = document.createElement("div");
-    el.textContent = item;
-    container.appendChild(el);
+  classes.forEach((cls) => {
+    const option = document.createElement("option");
+    option.value = cls;
+    option.innerText = cls;
+    classList.appendChild(option);
   });
 }
 
-renderList("subjectList", subjects, "Subjects");
-renderList("classList", classes, "Classes");
-
-document.getElementById("addSubject").addEventListener("click", () => {
-  const newSub = prompt("Enter new subject:");
-  if (newSub) {
-    subjects.push(newSub);
-    renderList("subjectList", subjects, "Subjects");
-  }
-});
-
-document.getElementById("addClass").addEventListener("click", () => {
-  const newClass = prompt("Enter new class:");
-  if (newClass) {
-    classes.push(newClass);
-    renderList("classList", classes, "Classes");
-  }
-});
-
-// Period Inputs
-document.getElementById("generatePeriodInputs").addEventListener("click", () => {
-  const count = parseInt(document.getElementById("periodCount").value);
-  const container = document.getElementById("periodInputs");
-  container.innerHTML = "";
-  for (let i = 1; i <= count; i++) {
-    const input = document.createElement("input");
-    input.type = "text";
-    input.placeholder = `Period ${i} time (e.g. 8:00 - 8:40)`;
-    input.className = "period-time";
-    container.appendChild(input);
-  }
-});
-
-// Add Breaks
-document.getElementById("addBreak").addEventListener("click", () => {
-  const container = document.getElementById("breakDetails");
+function addSubjectClassRow() {
+  const container = document.getElementById("subject-class-container");
   const div = document.createElement("div");
-  div.innerHTML = `Break for <input type="text" placeholder="e.g. Boys or Girls" /> at Period <input type="number" min="1" />`;
-  container.appendChild(div);
-});
-
-// Add Teacher Assignments
-const teacherAssignments = [];
-document.getElementById("addTeacherAssignment").addEventListener("click", () => {
-  const div = document.createElement("div");
+  div.classList.add("subject-class-row");
   div.innerHTML = `
-    Subject: <select>${subjects.map(s => `<option>${s}</option>`).join('')}</select>
-    Class: <select>${classes.map(c => `<option>${c}</option>`).join('')}</select>
+    <select class="subject-select">
+      ${subjects.map(subj => `<option value="${subj}">${subj}</option>`).join("")}
+    </select>
+    <select class="class-select">
+      ${classes.map(cls => `<option value="${cls}">${cls}</option>`).join("")}
+    </select>
+    <button onclick="this.parentElement.remove()">Remove</button>
   `;
-  document.getElementById("teacherAssignments").appendChild(div);
-});
+  container.appendChild(div);
+}
 
-document.getElementById("saveTeacher").addEventListener("click", () => {
-  const name = document.getElementById("teacherName").value;
-  const entries = document.querySelectorAll("#teacherAssignments div");
+function addTeacher() {
+  const nameInput = document.getElementById("teacher-name");
+  const container = document.getElementById("subject-class-container");
+
+  const name = nameInput.value.trim();
+  if (!name) return alert("Enter teacher name");
+
   const assignments = [];
-  entries.forEach(entry => {
-    const subject = entry.querySelector("select:nth-child(1)").value;
-    const className = entry.querySelector("select:nth-child(2)").value;
-    assignments.push({ subject, className });
+  container.querySelectorAll(".subject-class-row").forEach(row => {
+    const subj = row.querySelector(".subject-select").value;
+    const cls = row.querySelector(".class-select").value;
+    assignments.push({ subject: subj, class: cls });
   });
-  teacherAssignments.push({ name, assignments });
-  renderTeachers();
-});
 
-function renderTeachers() {
-  const container = document.getElementById("teacherList");
+  const teacher = { name, assignments };
+  teachers.push(teacher);
+  displayTeachers();
+  nameInput.value = "";
   container.innerHTML = "";
-  teacherAssignments.forEach((t, index) => {
-    const div = document.createElement("div");
-    div.innerHTML = `<b>${t.name}</b>: ${t.assignments.map(a => `${a.subject} - ${a.className}`).join(", ")} <button onclick="editTeacher(${index})">Edit</button> <button onclick="deleteTeacher(${index})">Delete</button>`;
-    container.appendChild(div);
+  addSubjectClassRow();
+}
+
+function displayTeachers() {
+  const list = document.getElementById("teacher-list");
+  list.innerHTML = "";
+  teachers.forEach((t, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${t.name} - ${t.assignments.map(a => `${a.subject} (${a.class})`).join(", ")}
+      <button onclick="editTeacher(${index})">Edit</button>
+      <button onclick="deleteTeacher(${index})">Delete</button>
+    `;
+    list.appendChild(li);
   });
 }
 
 function editTeacher(index) {
-  const t = teacherAssignments[index];
-  const newName = prompt("Edit teacher name", t.name);
-  if (newName) {
-    teacherAssignments[index].name = newName;
-    renderTeachers();
-  }
+  const t = teachers[index];
+  document.getElementById("teacher-name").value = t.name;
+  const container = document.getElementById("subject-class-container");
+  container.innerHTML = "";
+  t.assignments.forEach(a => {
+    const div = document.createElement("div");
+    div.classList.add("subject-class-row");
+    div.innerHTML = `
+      <select class="subject-select">
+        ${subjects.map(s => `<option value="${s}" ${s === a.subject ? "selected" : ""}>${s}</option>`).join("")}
+      </select>
+      <select class="class-select">
+        ${classes.map(c => `<option value="${c}" ${c === a.class ? "selected" : ""}>${c}</option>`).join("")}
+      </select>
+      <button onclick="this.parentElement.remove()">Remove</button>
+    `;
+    container.appendChild(div);
+  });
+  teachers.splice(index, 1);
 }
 
 function deleteTeacher(index) {
-  teacherAssignments.splice(index, 1);
-  renderTeachers();
+  if (confirm("Delete this teacher?")) {
+    teachers.splice(index, 1);
+    displayTeachers();
+  }
 }
 
+function generateTimetables() {
+  teacherTimetable = {};
+  classTimetable = {};
+  teachers.forEach(teacher => {
+    teacherTimetable[teacher.name] = Array(periodTimings.length).fill("-");
+    teacher.assignments.forEach((a, i) => {
+      const period = i % periodTimings.length;
+      if (!classTimetable[a.class]) classTimetable[a.class] = Array(periodTimings.length).fill("-");
+      const short = shortenSubject(a.subject);
+      classTimetable[a.class][period] = `${short} (${teacher.name})`;
+      teacherTimetable[teacher.name][period] = `${short} (${a.class})`;
+    });
+  });
 
-I've added your script.js file to the canvas above. Let me know if you'd like to proceed with the style.css file next or make any changes to the JavaScript.
+  displayTimetable("class", classTimetable);
+  displayTimetable("teacher", teacherTimetable);
+}
 
-                                       
+function displayTimetable(type, data) {
+  const container = document.getElementById(`${type}-timetable`);
+  const table = document.createElement("table");
+  const header = document.createElement("tr");
+  header.innerHTML = `<th>${type === "class" ? "Class" : "Teacher"}</th>`;
+  periodTimings.forEach((t, i) => {
+    header.innerHTML += `<th>${ordinal(i + 1)}<br><span class="time">${t}</span></th>`;
+  });
+  table.appendChild(header);
+
+  for (let key in data) {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${key}</td>`;
+    data[key].forEach(cell => {
+      const highlight = cell.toLowerCase().includes("break") ? ' class="break-cell"' : "";
+      row.innerHTML += `<td${highlight}>${cell}</td>`;
+    });
+    table.appendChild(row);
+  }
+
+  container.innerHTML = "";
+  container.appendChild(table);
+}
+
+function shortenSubject(subj) {
+  const map = {
+    "Science": "sci", "English": "eng", "Mathematics": "math",
+    "Economics": "eco", "Pakistan Studies": "PST", "Computer Science": "comp",
+    "Biology": "bio"
+  };
+  return map[subj] || subj;
+}
+
+function ordinal(n) {
+  return n + (n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th") + " Period";
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("dark-theme");
+}
+
+function updatePeriodCount() {
+  const count = parseInt(document.getElementById("period-count").value);
+  const container = document.getElementById("period-timings");
+  container.innerHTML = "";
+  for (let i = 0; i < count; i++) {
+    const input = document.createElement("input");
+    input.placeholder = `Timing for period ${i + 1}`;
+    input.value = periodTimings[i] || "";
+    container.appendChild(input);
+  }
+}
+
+function savePeriodTimings() {
+  const inputs = document.getElementById("period-timings").querySelectorAll("input");
+  periodTimings = Array.from(inputs).map(input => input.value || "-");
+  alert("Period timings saved.");
+}
