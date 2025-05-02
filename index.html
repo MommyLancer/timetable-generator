@@ -3,62 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart Timetable Generator</title>
+  <title>Smart School Timetable Generator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app-container">
-    <header>
-      <h1 id="schoolNameHeader">Smart Timetable Generator</h1>
-      <img id="schoolLogo" src="" alt="" style="display: none;" />
-    </header>
+  <header>
+    <h1>Smart School Timetable Generator</h1>
+    <button onclick="toggleTheme()">Toggle Theme</button>
+  </header>
 
-    <section class="setup-section">
-      <label>School Name: <input type="text" id="schoolNameInput" placeholder="Enter school name"></label>
-      <label>School Logo: <input type="file" id="schoolLogoInput" accept="image/*"></label>
-      <button onclick="saveSchoolInfo()">Save School Info</button>
-
-      <div class="period-settings">
-        <label>Number of Periods per Day: <input type="number" id="periodCount" min="1" value="8" /></label>
-        <button onclick="generatePeriodInputs()">Set Periods</button>
-        <div id="periodInputs"></div>
-        <button onclick="savePeriodTimings()">Save Period Timings</button>
-      </div>
-
-      <div class="break-settings">
-        <label>Are there multiple breaks? <select id="multipleBreaks" onchange="toggleBreakInputs()">
-          <option value="no">No</option>
-          <option value="yes">Yes</option>
-        </select></label>
-        <div id="breakInputs"></div>
-      </div>
-
-      <div class="teacher-entry">
-        <h2>Add Teacher</h2>
-        <input type="text" id="teacherName" placeholder="Teacher Name" />
-        <div id="subjectClassInputs"></div>
-        <button onclick="addSubjectClassRow()">+ Add Subject/Class</button>
-        <button onclick="addTeacher()">Add Teacher</button>
-      </div>
-
-      <div class="first-period-prefs">
-        <h3>Assign First Period Preferences</h3>
-        <div id="firstPeriodPrefs"></div>
-      </div>
+  <main>
+    <section class="teacher-entry">
+      <h2>Add Teacher</h2>
+      <input type="text" id="teacher-name" placeholder="Enter teacher name" />
+      <div id="subject-class-container"></div>
+      <button onclick="addSubjectClassRow()">+ Add Subject/Class</button>
+      <button onclick="addTeacher()">Add Teacher</button>
     </section>
 
-    <section class="teachers-section">
-      <h2>Teachers</h2>
-      <div id="teacherList"></div>
+    <section class="data-display">
+      <h2>Teachers List</h2>
+      <ul id="teacher-list"></ul>
     </section>
 
-    <section class="output-section">
+    <section class="period-settings">
+      <h2>Period Settings</h2>
+      <label for="period-count">Number of Periods:</label>
+      <input type="number" id="period-count" value="9" onchange="updatePeriodCount()" />
+      <div id="period-timings"></div>
+      <button onclick="savePeriodTimings()">Save Timings</button>
+    </section>
+
+    <section class="generate-timetable">
       <button onclick="generateTimetables()">Generate Timetables</button>
-      <div id="timetablesOutput"></div>
-      <button onclick="downloadPDF()">Download PDF</button>
     </section>
-  </div>
+
+    <section>
+      <h2>Class-wise Timetable</h2>
+      <div id="class-timetable" class="timetable"></div>
+    </section>
+
+    <section>
+      <h2>Teacher-wise Timetable</h2>
+      <div id="teacher-timetable" class="timetable"></div>
+    </section>
+  </main>
 
   <script src="script.js"></script>
+  <script>
+    window.onload = () => {
+      initDropdowns();
+      addSubjectClassRow();
+      updatePeriodCount();
+    };
+  </script>
 </body>
 </html>
